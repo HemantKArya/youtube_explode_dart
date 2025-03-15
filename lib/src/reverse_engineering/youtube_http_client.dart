@@ -140,6 +140,7 @@ class YoutubeHttpClient extends http.BaseClient {
     Map<String, String> headers = const {},
     bool validate = true,
     int start = 0,
+    int? end,
     int errorCount = 0,
     required StreamClient streamClient,
   }) {
@@ -163,6 +164,7 @@ class YoutubeHttpClient extends http.BaseClient {
       headers: headers,
       validate: validate,
       start: start,
+      end: end,
       errorCount: errorCount,
     );
   }
@@ -190,19 +192,20 @@ class YoutubeHttpClient extends http.BaseClient {
     Map<String, String> headers = const {},
     bool validate = true,
     int start = 0,
+    int? end,
     int errorCount = 0,
     required StreamClient streamClient,
   }) async* {
     var url = streamInfo.url;
     var bytesCount = start;
+    final totalBytes = end ?? streamInfo.size.totalBytes;
     while (!_closed && bytesCount != streamInfo.size.totalBytes) {
       try {
         final response = await retry(this, () async {
           final from = bytesCount;
-          final to = (streamInfo.isThrottled
-                  ? (bytesCount + 10379935)
-                  : streamInfo.size.totalBytes) -
-              1;
+          final to =
+              (streamInfo.isThrottled ? (bytesCount + 10379935) : totalBytes) -
+                  1;
 
           late final http.Request request;
           if (url.queryParameters['c'] == 'ANDROID') {
@@ -256,6 +259,7 @@ class YoutubeHttpClient extends http.BaseClient {
           headers: headers,
           validate: validate,
           start: bytesCount,
+          end: totalBytes,
           errorCount: errorCount + 1,
         );
         break;
