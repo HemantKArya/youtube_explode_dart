@@ -153,7 +153,7 @@ class StreamClient {
   /// For HLS streams all the fragments are concatenated into a single stream.
   Stream<List<int>> get(StreamInfo streamInfo, {int? start, int? end}) =>
       _httpClient.getStream(streamInfo,
-          streamClient: this, start: start, end: end);
+          streamClient: this, start: start ?? 0, end: end);
 
   Stream<StreamInfo> _getStreams(VideoId videoId,
       {required YoutubeApiClient ytClient,
