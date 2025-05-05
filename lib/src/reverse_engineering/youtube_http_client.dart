@@ -206,7 +206,6 @@ class YoutubeHttpClient extends http.BaseClient {
           final to =
               (streamInfo.isThrottled ? (bytesCount + 10379935) : totalBytes) -
                   1;
-
           late final http.Request request;
           if (url.queryParameters['c'] == 'ANDROID') {
             request = http.Request('get', url);
